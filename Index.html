@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#DFD0B8]">
+    <nav class="bg-[#153448] shadow-lg sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-white text-lg">Movie Management</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="#" class="py-4 px-2 text-white font-semibold hover:text-green-500 transition duration-300">Home</a>
+                    <a href="#" class="py-4 px-2 text-white font-semibold hover:text-green-500 transition duration-300">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto mt-36 px-4 ">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 flex justify-between">
+            <div class="mx-16 bg-white rounded-lg shadow-2xl overflow-hidden w-9/12">
+                <img src=".\Images\movie.png" alt="Movie" class="w-full h-48 object-cover">
+                <div class="p-4 bg-[#3C5B6F] shadow-lg flex justify-center">
+                    <button class="bg-[#ebb16a]  hover:bg-blue-700 text-black font-bold py-2 px-4 rounded" onclick="showDetails('movie')">
+                        Movie Details
+                    </button>
+                </div>
+            </div>
+            <div class=" mx-16 bg-white rounded-lg shadow-2xl overflow-hidden w-9/12">
+                <img src=".\Images\actor.png" alt="Actor" class="w-full h-48 object-cover">
+                <div class="p-4 bg-[#3C5B6F] shadow-lg flex justify-center">
+                    <button class="bg-[#ebb16a] hover:bg-red-700 text-black font-bold py-2 px-4 rounded " onclick="showDetails('actor')">
+                        Actor Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        <div class="grid grid-cols-1 gap-8">
+            <div class="flex justify-center">
+                <div class="bg-white rounded-lg shadow-2xl overflow-hidden w-full max-w-md">
+                    <img src=".\Images\Director.png" alt="Director" class="w-full h-48 object-cover">
+                    <div class="p-4 text-center  bg-[#3C5B6F]">
+                        <button class="bg-[#ebb16a] hover:bg-green-700 text-black font-bold py-2 px-4 rounded" onclick="showDetails('director')">
+                            Director Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <div class="container mx-auto mt-36 px-4 ">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 flex justify-between">
+            <div class="bg-white rounded-lg shadow-2xl overflow-hidden w-full max-w-md">
+                <img src=".\Images\index.png" alt="MovieInfo" class="w-full h-48 object-cover">
+                <div class="p-4 text-center  bg-[#3C5B6F]">
+                    <button class="bg-[#ebb16a] hover:bg-green-700 text-black font-bold py-2 px-4 rounded" onclick="showDetails('movieInfo')">
+                        Movie Info
+                      </button>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-2xl overflow-hidden w-full max-w-md">
+                <img src=".\Images\index2.png" alt="MovieDetails" class="w-full h-48 object-cover">
+                <div class="p-4 text-center  bg-[#3C5B6F]">
+                    <button class="bg-[#ebb16a] hover:bg-green-700 text-black font-bold py-2 px-4 rounded" onclick="showDetails('movieDetails')">
+                        Movie Details
+                      </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDetails(type) {
+            let message = '';
+            switch(type) {
+                case 'movie':
+                    window.location.href = './Movie.html';
+                    break;
+                case 'director':
+                    window.location.href = './Director_page.html';
+                    break;
+                case 'actor':
+                window.location.href = './Test.html';
+                    break;
+                case 'movieInfo':
+                window.location.href = './displayMovies.html';
+                    break;
+                case 'movieDetails':
+                window.location.href = './fetchmoviebypcompany.html';
+                    break;    
+            }
+        }
+        
+    </script>
+</body>
+</html>

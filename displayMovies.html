@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Movie Display</h1>
+    <form id="yearRangeForm">
+        <label for="yearRange">Enter Year Range (e.g., 1952-2050):</label>
+        <input type="text" id="yearRange" name="yearRange" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <table id="movieTable">
+        <thead>
+            <tr>
+                <th>SL No.</th>
+                <th>Title</th>
+                <th>Year</th>
+                <th>Length</th>
+                <th>Genre</th>
+                <th>Director</th>
+                <th>Production Company</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Movie data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById('yearRangeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const yearRange = document.getElementById('yearRange').value.trim();
+
+            if (!/^\d{4}-\d{4}$/.test(yearRange)) {
+                alert('Please enter a valid year range in the format YYYY-YYYY.');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/displayMovies', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ range: [yearRange] })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const movies = await response.json();
+                const tbody = document.getElementById('movieTable').querySelector('tbody');
+                tbody.innerHTML = ''; // Clear previous results
+
+                movies.forEach((movie, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td> <!-- SL No. -->
+                        <td>${movie.Title}</td>
+                        <td>${movie.Year}</td>
+                        <td>${movie.Length}</td>
+                        <td>${movie.Genre}</td>
+                        <td>${movie.Director_Name}</td>
+                        <td>${movie.Production_Company_Name}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching movie data:', error);
+            }
+        });
+    </script>
+
+</body>
+</html>

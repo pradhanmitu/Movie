@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Actor Details with Multiple Movies and Quotes</title>
+</head>
+<body>
+    <h2>Add Actor Details with Multiple Movies and Quotes</h2>
+    <form action="/insertActorDetails" method="POST" id="actorForm">
+        <label for="actorName">Actor Name:</label>
+        <input type="text" id="actorName" name="actorName" required><br><br>
+        
+        <label for="actorDOB">Actor Date of Birth:</label>
+        <input type="date" id="actorDOB" name="actorDOB" required><br><br>
+        
+        <label for="movies">Movies:</label><br>
+        <select id="movies" name="movies[]" multiple required>
+            <!-- Options will be populated dynamically -->
+        </select><br><br>
+        
+        <div id="quoteContainer">
+            <div class="quoteGroup">
+                <label for="movie1Quote">Movie 1 Quote:</label>
+                <input type="text" id="movie1Quote" name="movieQuotes[1][]" ><br><br>
+            </div>
+        </div>
+        
+        <button type="button" onclick="addQuoteField()">Add Quote</button><br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/getMovieName')
+                .then(response => response.json())
+                .then(data => {
+                    const selectMovies = document.getElementById('movies');
+                    data.forEach(movie => {
+                        const option = document.createElement('option');
+                        option.value = `${movie.Title} (${movie.Year})`; // Adjust based on your data structure
+                        option.text = `${movie.Title} (${movie.Year})`;
+                        selectMovies.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching movies:', error));
+        });
+
+        function addQuoteField() {
+            const container = document.getElementById('quoteContainer');
+            const quoteGroup = document.createElement('div');
+            const count = container.querySelectorAll('.quoteGroup').length + 1;
+            quoteGroup.className = 'quoteGroup';
+            quoteGroup.innerHTML = `
+                <label for="movie${count}Quote">Movie ${count} Quote:</label>
+                <input type="text" id="movie${count}Quote" name="movieQuotes[${count}][]"><br><br>
+            `;
+            container.appendChild(quoteGroup);
+        }
+    </script>
+</body>
+</html>

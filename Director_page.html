@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Director</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+  <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold mb-4">About Director</h2>
+    <form id="directorForm">
+      <div class="mb-4">
+        <label for="name" class="block mb-2">Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          class="w-full border rounded px-3 py-2"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="dob" class="block mb-2">Date of birth</label>
+        <input
+          type="date"
+          id="dob"
+          name="dob"
+          class="w-full border rounded px-3 py-2"
+        />
+      </div>
+      <div id="movieContainer"></div>
+      <button
+        type="button"
+        id="addMovie"
+        class="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+      >
+        + Add Movie
+      </button>
+      <button
+        type="button"
+        id="register"
+        class="bg-green-500 text-white px-4 py-2 rounded mt-4 ml-2 hidden"
+      >
+        Register
+      </button>
+    </form>
+  </div>
+
+  <script>
+    let movieCount = 0;
+
+    document.getElementById("addMovie").addEventListener("click", addMovieDetails);
+    document.getElementById("register").addEventListener("click", registerDirector);
+
+    function addMovieDetails() {
+      movieCount++;
+      const movieDiv = document.createElement("div");
+      movieDiv.className = "mb-4 p-4 border rounded";
+      movieDiv.innerHTML = `
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="font-bold">Movie Details</h3>
+          <button type="button" class="removeMovie text-xl">&minus;</button>
+        </div>
+        <div class="movieContent">
+          <div class="mb-2">
+            <select name="movieName${movieCount}" class="movieDropdown">
+              <!-- getMoviesOption() -->
+            </select>
+			
+          </div>
+          <div class="mb-2">
+            <label class="inline-flex items-center mr-4">
+              <input type="checkbox" name="isActed${movieCount}" class="form-checkbox isActedCheckbox">
+              <span class="ml-2">is Acted</span>
+            </label>
+            <label class="inline-flex items-center">
+              <input type="checkbox" name="isDirected${movieCount}" class="form-checkbox">
+              <span class="ml-2">is Directed</span>
+            </label>
+          </div>
+          <div class="roleInputContainer hidden mt-2">
+            <input type="text" name="role${movieCount}" placeholder="Actor's role" class="w-full border rounded px-3 py-2">
+          </div>
+        </div>
+      `;
+	  
+      document.getElementById("movieContainer").appendChild(movieDiv);
+      document.getElementById("register").classList.remove("hidden");
+
+      movieDiv.querySelector(".removeMovie").addEventListener("click", function () {
+        this.closest(".mb-4").remove();
+        if (document.querySelectorAll("#movieContainer > div").length === 0) {
+          document.getElementById("register").classList.add("hidden");
+        }
+      });
+
+      movieDiv.querySelector(".isActedCheckbox").addEventListener("change", function () {
+        const roleInputContainer = this.closest(".movieContent").querySelector(".roleInputContainer");
+        roleInputContainer.classList.toggle("hidden", !this.checked);
+      });
+
+      getMovieOptions(movieDiv.querySelector(`select[name="movieName${movieCount}"]`));
+    }
+
+    function registerDirector() {
+      const form = document.getElementById("directorForm");
+      const formData = new FormData(form);
+      const data = {
+        name: formData.get("name"),
+        dob: formData.get("dob"),
+        movies: [],
+      };
+
+      document.querySelectorAll("#movieContainer > div").forEach((movieDiv, index) => {
+        const movieName = movieDiv.querySelector(`select[name="movieName${index + 1}"]`).value;
+        if (movieName) {
+          const isActed = movieDiv.querySelector(`input[name="isActed${index + 1}"]`).checked;
+          const movie = {
+            m_name: movieName,
+            isActed: isActed,
+            isDirected: movieDiv.querySelector(`input[name="isDirected${index + 1}"]`).checked,
+          };
+          if (isActed) {
+            movie.role = movieDiv.querySelector(`input[name="role${index + 1}"]`).value;
+          }
+          data.movies.push(movie);
+        }
+      });
+
+      alert(JSON.stringify(data, null, 2));
+      fetch("http://localhost:5000/Director_page", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log("Success:", responseData);
+          // Optionally handle success response
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Handle errors
+        });
+    }
+
+    async function getMovieOptions(dropdown) {
+		try {
+        const response = await fetch("http://localhost:5000/getMovieName");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const movieData = await response.json();
+
+        // Populate dropdown
+        dropdown.innerHTML = "";
+        movieData.forEach((movie) => {
+          const option = document.createElement("option");
+          option.value = movie.Title+","+movie.Year;
+          option.textContent = movie.Title+","+movie.Year;
+          dropdown.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Error fetching movie data:", error);
+      }
+    }
+  </script>
+</body>
+</html>

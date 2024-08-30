@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-[#DFD0B8]">
+    <nav class="bg-[#153448] shadow-lg sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-white text-lg">Movie Management</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="Index.html" class="py-4 px-2 text-white font-semibold hover:text-green-500 transition duration-300">Home</a>
+                    <a href="#" class="py-4 px-2 text-white font-semibold hover:text-green-500 transition duration-300">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="flex justify-center items-center h-screen">
+        <form method="get" action="/insertmovie">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <h1>Add Movie</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="title">Title:</label></td>
+                    <td><input type="text" id="title" name="title" required></td>
+                </tr>
+                <tr>
+                    <td><label for="year">Year of Release:</label></td>
+                    <td><input type="text" id="year" name="year" required></td>
+                </tr>
+                <tr>
+                    <td><label for="length">Length (minutes):</label></td>
+                    <td><input type="text" id="length" name="length" required></td>
+                </tr>
+                <tr>
+                    <td><label for="plot_outline">Plot Outline:</label></td>
+                    <td><textarea id="plot_outline" name="plot_outline" required></textarea></td>
+                </tr>
+                <tr>
+                    <td><label for="pcompany">Production Company:&nbsp;</label></td>
+                    <td><select name="pcompany" id="pcompany" multiple="multiple">
+                        <option value="none" disabled>select</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td><label for="genre">Genre:&nbsp;</label></td>
+                    <td><select name="genre" id="genre" multiple="multiple">
+                        <option value="none" disabled>select</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" value="Add Movie"></td>
+                </tr>
+            </table>
+        </form>
+        <script>
+            $(document).ready(function () {
+                fetch('/productions')
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('Network response was not ok ' + res.statusText);
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        const select = document.getElementById('pcompany');
+                        data.forEach(company => {
+                            const option = document.createElement('option');
+                            option.textContent = company.Name.replace(/\b\w/g, c => c.toUpperCase());
+                            select.append(option);
+                        });
+                    })
+                    .catch(err => console.error('Error fetching production companies:', err));
+            });
+
+            $(document).ready(function () {
+                fetch('/genres')
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('Network response was not ok ' + res.statusText);
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        const select = document.getElementById('genre');
+                        data.forEach(genretype => {
+                            const option = document.createElement('option');
+                            option.textContent = genretype.Type.replace(/\b\w/g, c => c.toUpperCase());
+                            select.append(option);
+                        });
+                    })
+                    .catch(err => console.error('Error fetching genre type:', err));
+            });
+        </script>
+    </div>
+</body>
+</html>
